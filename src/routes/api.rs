@@ -110,4 +110,236 @@ mod tests {
 
         insta::assert_json_snapshot!(updated_asset);
     }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_update_asset_name_only(db: PgPool) {
+        let request = UpdateAssetRequest {
+            id: 1,
+            name: Some("Bitcoin Updated".to_string()),
+            unit_value: None,
+        };
+
+        let Json(updated_asset) = update_asset(Admin, db.into(), Json(request))
+            .await
+            .expect("success");
+
+        assert_eq!(updated_asset.id, 1);
+        assert_eq!(updated_asset.name, "Bitcoin Updated");
+
+        // O valor original deve ser preservado
+        assert_eq!(updated_asset.unit_value, 10.0);
+
+        insta::assert_json_snapshot!(updated_asset);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_update_asset_value_only(db: PgPool) {
+        let request = UpdateAssetRequest {
+            id: 1,
+            name: None,
+            unit_value: Some(25.0),
+        };
+
+        let Json(updated_asset) = update_asset(Admin, db.into(), Json(request))
+            .await
+            .expect("success");
+
+        assert_eq!(updated_asset.id, 1);
+
+        assert_eq!(updated_asset.name, "Bitcoin");
+
+        assert_eq!(updated_asset.unit_value, 25.0);
+
+        insta::assert_json_snapshot!(updated_asset);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_user_assets_workflow(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user");
+
+        let assets = repo
+            .list_user_assets(user.id)
+            .await
+            .expect("list initial assets");
+
+        assert!(assets.is_empty());
+
+        repo.buy_user_asset(user.id, 1, 2.5, None)
+            .await
+            .expect("buy asset");
+
+        let user_assets = repo.list_user_assets(user.id).await.expect("list assets");
+
+        assert_eq!(user_assets.len(), 1);
+        assert_eq!(user_assets[0].name, "Bitcoin");
+        assert_eq!(user_assets[0].quantity, 2.5);
+        assert_eq!(user_assets[0].unit_value, 10.0);
+
+        repo.buy_user_asset(user.id, 1, 1.5, None)
+            .await
+            .expect("buy more asset");
+
+        let updated_assets = repo
+            .list_user_assets(user.id)
+            .await
+            .expect("list updated assets");
+
+        assert_eq!(updated_assets.len(), 1);
+        assert_eq!(updated_assets[0].quantity, 4.0);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_multiple_users_have_independent_assets(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user1 = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user 1");
+
+        let user2 = repo
+            .add_user("Marie", "hashed_password")
+            .await
+            .expect("create user 2");
+
+        repo.buy_user_asset(user1.id, 1, 5.0, None)
+            .await
+            .expect("user 1 buy");
+
+        repo.buy_user_asset(user2.id, 1, 2.0, None)
+            .await
+            .expect("user 2 buy");
+
+        let user1_assets = repo
+            .list_user_assets(user1.id)
+            .await
+            .expect("list user 1 assets");
+
+        assert_eq!(user1_assets.len(), 1);
+        assert_eq!(user1_assets[0].quantity, 5.0);
+
+        let user2_assets = repo
+            .list_user_assets(user2.id)
+            .await
+            .expect("list user 2 assets");
+
+        assert_eq!(user2_assets.len(), 1);
+        assert_eq!(user2_assets[0].quantity, 2.0);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_buy_multiple_assets_same_user(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user");
+
+        repo.buy_user_asset(user.id, 1, 2.0, None)
+            .await
+            .expect("buy bitcoin");
+        let assets = repo.list_user_assets(user.id).await.expect("list assets");
+
+        assert_eq!(assets.len(), 1);
+        assert_eq!(assets[0].name, "Bitcoin");
+        assert_eq!(assets[0].quantity, 2.0);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_user_can_buy_same_asset_multiple_times(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user");
+
+        repo.buy_user_asset(user.id, 1, 1.0, None)
+            .await
+            .expect("first buy");
+
+        repo.buy_user_asset(user.id, 1, 2.0, None)
+            .await
+            .expect("second buy");
+
+        repo.buy_user_asset(user.id, 1, 3.0, None)
+            .await
+            .expect("third buy");
+
+        let assets = repo.list_user_assets(user.id).await.expect("list assets");
+
+        assert_eq!(assets.len(), 1);
+
+        assert_eq!(assets[0].quantity, 6.0);
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_buy_asset_with_custom_unit_value(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user");
+
+        // Buy 2 Bitcoins at $5.0 custom price (Market base price is $10.0)
+        repo.buy_user_asset(user.id, 1, 2.0, Some(5.0))
+            .await
+            .expect("buy bitcoin with custom price");
+
+        let assets = repo.list_user_assets(user.id).await.expect("list assets");
+
+        assert_eq!(assets.len(), 1);
+        assert_eq!(assets[0].name, "Bitcoin");
+        assert_eq!(assets[0].quantity, 2.0);
+        assert_eq!(assets[0].unit_value, 10.0); // Market base price remains 10.0
+        assert_eq!(assets[0].purchase_price, 5.0);
+        assert_eq!(assets[0].pnl, 10.0); // (10.0 - 5.0) * 2.0 = +10.0 Profit!
+    }
+
+    #[sqlx::test(fixtures("bitcoin_asset"))]
+    async fn test_sell_asset_profit_and_loss(db: PgPool) {
+        let repo = Repository::from(db);
+
+        let user = repo
+            .add_user("John", "hashed_password")
+            .await
+            .expect("create user");
+
+        // Buy 10 Bitcoins at $5.0 each (Market base price is $10.0) -> Lucro: +$5.0 per unit * 10 = +$50.0
+        repo.buy_user_asset(user.id, 1, 10.0, Some(5.0))
+            .await
+            .expect("buy asset");
+
+        let assets = repo.list_user_assets(user.id).await.expect("list assets");
+        assert_eq!(assets[0].quantity, 10.0);
+        assert_eq!(assets[0].unit_value, 10.0);
+        assert_eq!(assets[0].purchase_price, 5.0);
+        assert_eq!(assets[0].pnl, 50.0); // (10 - 5) * 10 = +50.0
+
+        // Sell 4 Bitcoins
+        repo.sell_user_asset(user.id, 1, 4.0, Some(10.0))
+            .await
+            .expect("sell asset");
+
+        let assets_after_sell = repo.list_user_assets(user.id).await.expect("list assets");
+        assert_eq!(assets_after_sell[0].quantity, 6.0);
+        assert_eq!(assets_after_sell[0].unit_value, 10.0);
+        assert_eq!(assets_after_sell[0].pnl, 50.0); // 30.0 unrealized + 20.0 realized = 50.0 total cumulative PnL
+
+        // Sell remaining 6 Bitcoins
+        repo.sell_user_asset(user.id, 1, 6.0, None)
+            .await
+            .expect("sell remaining asset");
+
+        let assets_final = repo.list_user_assets(user.id).await.expect("list assets");
+        assert_eq!(assets_final.len(), 1);
+        assert_eq!(assets_final[0].quantity, 0.0);
+    }
 }
