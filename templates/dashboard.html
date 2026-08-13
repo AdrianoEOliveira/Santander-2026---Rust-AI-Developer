@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteira Digital - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #070a13;
+            color: #f1f5f9;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Light Mode Custom Styling */
+        body.light-mode {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode .ambient-glow {
+            opacity: 0.25;
+        }
+
+        body.light-mode header,
+        body.light-mode .theme-card {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 25px -3px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        body.light-mode .text-white,
+        body.light-mode .text-slate-100,
+        body.light-mode .text-slate-200 {
+            color: #0f172a !important;
+        }
+
+        body.light-mode .text-slate-300,
+        body.light-mode .text-slate-400 {
+            color: #475569 !important;
+        }
+
+        body.light-mode .bg-\[\#0d1322\]\/90,
+        body.light-mode .bg-\[\#0d1322\]\/80,
+        body.light-mode .bg-\[\#0d1322\],
+        body.light-mode .bg-\[\#131b2e\],
+        body.light-mode .bg-\[\#070b14\] {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        body.light-mode input,
+        body.light-mode select {
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode input::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        body.light-mode tr.hover\:border-cyan-400\/40:hover {
+            border-color: #06b6d4 !important;
+            background-color: #f1f5f9 !important;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-[#070a13] text-slate-100 min-h-screen flex flex-col items-center justify-start p-4 sm:p-6 md:p-10 relative overflow-x-hidden">
+    <!-- Ambient Glow Background Blobs -->
+    <div
+        class="ambient-glow absolute -top-32 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none">
+    </div>
+    <div
+        class="ambient-glow absolute top-1/3 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none">
+    </div>
+
+    <div class="w-full max-w-5xl flex flex-col gap-8 relative z-10">
+
+        <!-- Top Header Navigation -->
+        <header
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#0d1322]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-0.5 shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                    <div class="w-full h-full bg-[#0d1322] rounded-[10px] flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white">Carteira Digital</h1>
+                    <p class="text-xs text-slate-400">Painel de Investimentos</p>
+                </div>
+            </div>
+
+            <div
+                class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0">
+                <!-- Theme Switcher Button -->
+                <button type="button" onclick="toggleTheme()"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer">
+                    <svg id="theme-sun-icon" class="w-4 h-4 text-amber-400 hidden" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
+                    </svg>
+                    <svg id="theme-moon-icon" class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                    <span id="theme-label">Noite</span>
+                </button>
+
+                <div
+                    class="flex items-center gap-2 bg-[#131b2e] px-3.5 py-1.5 rounded-xl border border-white/5 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-slate-400">Usuário:</span>
+                    <span class="text-white font-bold">{{ self.username }}</span>
+                </div>
+
+                <a href="/login"
+                    class="flex items-center gap-1.5 text-xs text-rose-400/80 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 px-3 py-1.5 rounded-xl transition-all font-semibold">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                    Sair
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Assets Card Table -->
+        <main class="w-full flex flex-col gap-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-white tracking-tight">Meus Ativos</h2>
+                    <p class="text-xs text-slate-400">Clique na linha de qualquer ativo para ver o histórico detalhado
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="openRegisterModal()"
+                        class="px-4 py-2.5 bg-gradient-to-r from-cyan-500/20 to-cyan-400/20 border border-cyan-400/40 hover:border-cyan-300 text-cyan-300 font-bold text-xs rounded-xl hover:bg-cyan-500/30 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Registrar Compra
+                    </button>
+                    <button type="button" onclick="openSellModal()"
+                        class="px-4 py-2.5 bg-gradient-to-r from-rose-500/20 to-rose-400/20 border border-rose-400/40 hover:border-rose-300 text-rose-300 font-bold text-xs rounded-xl hover:bg-rose-500/30 hover:shadow-[0_0_20px_rgba(244,63,94,0.2)] active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                        Registrar Venda
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-separate border-spacing-y-3">
+                    <thead>
+                        <tr class="text-slate-400 text-xs font-semibold uppercase tracking-wider px-4">
+                            <th class="py-2 px-6">Ativo</th>
+                            <th class="py-2 px-6 text-center">Quantidade</th>
+                            <th class="py-2 px-6 text-center">Preço Unitário</th>
+                            <th class="py-2 px-6 text-right">Variação (PNL)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if self.user_assets.is_empty() %}
+                        <tr>
+                            <td colspan="4"
+                                class="py-12 text-center text-slate-400 text-xs italic bg-[#0d1322]/80 border border-white/10 rounded-2xl">
+                                Nenhuma transação cadastrada ainda. Clique em "Registrar Compra" para começar!
+                            </td>
+                        </tr>
+                        {% else %}
+                        {% for asset in self.user_assets %}
+                        {% let idx = loop.index0 %}
+                        <!-- Parent Row (Clickable) -->
+                        <tr onclick="toggleDetails({{ idx }})"
+                            class="bg-[#0d1322]/90 border border-white/10 hover:border-cyan-400/40 rounded-2xl cursor-pointer transition-all duration-200 select-none group shadow-lg">
+                            <td
+                                class="py-4 px-6 font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-3">
+                                <span
+                                    class="text-slate-500 group-hover:text-cyan-400 transition-colors text-xs font-mono">▼</span>
+                                <span>{{ asset.name }}</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-mono text-slate-200">
+                                {% if asset.quantity.fract() == 0.0 %}
+                                {{ format!("{:.0}", asset.quantity) }}
+                                {% else %}
+                                {{ format!("{:.2}", asset.quantity) }}
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-6 text-center font-mono text-slate-300">
+                                $ {{ format!("{:.2}", asset.unit_value) }}
+                            </td>
+                            <td
+                                class="py-4 px-6 text-right font-mono font-bold {% if asset.pnl >= 0.0 %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                                {% if asset.pnl >= 0.0 %}+{% endif %}$ {{ format!("{:.2}", asset.pnl) }}
+                                <span class="text-xs font-normal opacity-80">({{ format!("{:.1}", asset.pnl_percent)
+                                    }}%)</span>
+                            </td>
+                        </tr>
+
+                        <!-- Sub-Row (Expanded Details on Click) -->
+                        <tr id="details-{{ idx }}"
+                            class="hidden bg-[#070b14] border-x border-b border-white/5 rounded-b-xl">
+                            <td colspan="4" class="px-6 py-4">
+                                <div class="w-full flex flex-col gap-2">
+                                    <div
+                                        class="grid grid-cols-4 text-xs font-mono text-slate-500 uppercase tracking-wider pb-2 border-b border-slate-800/60">
+                                        <span>Data & Tipo</span>
+                                        <span class="text-center">Quantidade</span>
+                                        <span class="text-center">Preço</span>
+                                        <span class="text-right">Resultado</span>
+                                    </div>
+                                    {% for item in asset.purchases %}
+                                    <div class="grid grid-cols-4 text-xs text-slate-300 font-mono py-1.5 items-center">
+                                        <span class="text-slate-400 flex items-center gap-2">
+                                            {% if item.transaction_type == "sell" %}
+                                            <span
+                                                class="px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold">VENDA</span>
+                                            {% else %}
+                                            <span
+                                                class="px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold">COMPRA</span>
+                                            {% endif %}
+                                            {{ item.created_at }}
+                                        </span>
+                                        <span class="text-center">
+                                            {% if item.quantity.fract() == 0.0 %}
+                                            {{ format!("{:.0}", item.quantity) }}
+                                            {% else %}
+                                            {{ format!("{:.1}", item.quantity) }}
+                                            {% endif %}
+                                        </span>
+                                        <span class="text-center">
+                                            {% if item.purchase_price.fract() == 0.0 %}
+                                            $ {{ format!("{:.0}", item.purchase_price) }}
+                                            {% else %}
+                                            $ {{ format!("{:.2}", item.purchase_price) }}
+                                            {% endif %}
+                                        </span>
+                                        <span
+                                            class="text-right font-mono font-bold {% if item.pnl >= 0.0 %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                                            {% if item.pnl >= 0.0 %}+{% endif %}{% if item.pnl.fract() == 0.0 %}{{
+                                            format!("{:.0}", item.pnl) }}{% else %}{{ format!("{:.2}", item.pnl) }}{%
+                                            endif %}
+                                            {% if item.transaction_type == "sell" %}
+                                            {% if item.pnl >= 0.0 %} <span
+                                                class="text-[10px] font-semibold opacity-90">(Lucro)</span>{% else %}
+                                            <span class="text-[10px] font-semibold opacity-90">(Prejuízo)</span>{% endif
+                                            %}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Register Purchase Modal Pop-Up -->
+    <div id="register-modal"
+        class="fixed inset-0 bg-black/75 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div
+            class="bg-[#0d1322] border border-white/10 rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col gap-6 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                <h2 class="text-white text-lg font-bold tracking-tight">Registrar Compra</h2>
+                <button type="button" onclick="closeRegisterModal()"
+                    class="text-slate-400 hover:text-white transition-colors">✕</button>
+            </div>
+
+            <form action="/Carteira/buy" method="POST" class="flex flex-col gap-4">
+                <!-- Asset Selection -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Selecione o Ativo</label>
+                    <select name="asset_id" id="modal-asset-select" required onchange="onAssetChange()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono focus:outline-none focus:border-cyan-400/60 transition-all cursor-pointer text-sm">
+                        <option value="" disabled selected>Escolha um ativo</option>
+                        {% for asset in self.assets %}
+                        <option value="{{ asset.id }}" data-unit-value="{{ asset.unit_value }}">
+                            {{ asset.name }} ($ {{ format!("{:.2}", asset.unit_value) }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Quantity Input -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Quantidade</label>
+                    <input type="number" name="quantity" id="modal-quantity-input" step="any" min="0.000001" required
+                        placeholder="Ex: 10" oninput="calculateModalTotal()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono placeholder-slate-600 focus:outline-none focus:border-cyan-400/60 transition-all text-sm">
+                </div>
+
+                <!-- Custom Unit Price Input -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Preço Unitário Pago ($)</label>
+                    <input type="number" name="unit_value" id="modal-price-input" step="any" min="0.0001" required
+                        placeholder="Ex: 10.00" oninput="calculateModalTotal()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono placeholder-slate-600 focus:outline-none focus:border-cyan-400/60 transition-all text-sm">
+                </div>
+
+                <!-- Real-time Calculation Summary Box -->
+                <div
+                    class="bg-[#131b2e]/90 border border-cyan-500/20 rounded-xl p-4 flex flex-col gap-2 text-xs font-mono shadow-inner">
+                    <div class="flex justify-between text-slate-400">
+                        <span>Preço Unitário:</span>
+                        <span id="modal-unit-price" class="text-slate-200 font-bold">$ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Quantidade:</span>
+                        <span id="modal-quantity-val" class="text-slate-200 font-bold">0</span>
+                    </div>
+                    <div class="border-t border-slate-700/50 my-1"></div>
+                    <div class="flex justify-between font-bold text-sm">
+                        <span class="text-slate-300">Custo Total:</span>
+                        <span id="modal-total-cost" class="text-cyan-400 font-bold">$ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                        <span>Comparação Base:</span>
+                        <span id="buy-pnl-status" class="text-slate-300 font-bold">-</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-3 mt-2">
+                    <button type="button" onclick="closeRegisterModal()"
+                        class="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-slate-300 font-semibold text-xs transition-all duration-200 cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-slate-950 font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-200 cursor-pointer">
+                        Confirmar Compra
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Sale Modal Pop-Up -->
+    <div id="sell-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div
+            class="bg-[#0d1322] border border-white/10 rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col gap-6 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                <h2 class="text-white text-lg font-bold tracking-tight">Registrar Venda</h2>
+                <button type="button" onclick="closeSellModal()"
+                    class="text-slate-400 hover:text-white transition-colors">✕</button>
+            </div>
+
+            <form action="/Carteira/sell" method="POST" class="flex flex-col gap-4">
+                <!-- Asset Dropdown -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Ativo para Venda</label>
+                    <select name="asset_id" id="sell-asset-select" required onchange="onSellAssetChange()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono focus:outline-none focus:border-rose-400/60 transition-all cursor-pointer text-sm">
+                        <option value="" disabled selected>Selecione um ativo</option>
+                        {% for item in self.user_assets %}
+                        {% if item.quantity > 0.0 %}
+                        <option value="{{ item.asset_id }}" data-purchase-price="{{ item.purchase_price }}"
+                            data-unit-value="{{ item.unit_value }}" data-max-quantity="{{ item.quantity }}">
+                            {{ item.name }} (Disponível: {{ format!("{:.0}", item.quantity) }})
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Quantity Input -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Quantidade</label>
+                    <input type="number" name="quantity" id="sell-quantity-input" step="any" min="0.000001" required
+                        placeholder="Ex: 10" oninput="calculateSellTotal()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono placeholder-slate-600 focus:outline-none focus:border-rose-400/60 transition-all text-sm">
+                </div>
+
+                <!-- Selling Unit Price Input -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-slate-300 text-xs font-semibold ml-1">Preço Unitário de Venda ($)</label>
+                    <input type="number" name="sell_price" id="sell-price-input" step="any" min="0.0001" required
+                        placeholder="Ex: 12.00" oninput="calculateSellTotal()"
+                        class="w-full px-4 py-3 bg-[#131b2e] border border-white/10 rounded-xl text-white font-mono placeholder-slate-600 focus:outline-none focus:border-rose-400/60 transition-all text-sm">
+                </div>
+
+                <!-- Real-time Sale Profit / Loss Summary -->
+                <div
+                    class="bg-[#131b2e]/90 border border-rose-500/20 rounded-xl p-4 flex flex-col gap-2 text-xs font-mono shadow-inner">
+                    <div class="flex justify-between text-slate-400">
+                        <span>Preço de Custo Ponderado:</span>
+                        <span id="sell-purchase-price" class="text-slate-200 font-bold">$ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Receita Bruta:</span>
+                        <span id="sell-total-revenue" class="text-slate-200 font-bold">$ 0.00</span>
+                    </div>
+                    <div class="border-t border-slate-700/50 my-1"></div>
+                    <div class="flex justify-between font-bold text-sm">
+                        <span class="text-slate-300">Resultado da Venda:</span>
+                        <span id="sell-pnl-result" class="text-emerald-400 font-bold">$ 0.00 (Lucro)</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-3 mt-2">
+                    <button type="button" onclick="closeSellModal()"
+                        class="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-slate-300 font-semibold text-xs transition-all duration-200 cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.3)] transition-all duration-200 cursor-pointer">
+                        Confirmar Venda
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Theme Switcher, Expandable Rows & Modal Pop-Ups -->
+    <script>
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                updateThemeToggleIcons(true);
+            } else {
+                document.body.classList.remove('light-mode');
+                updateThemeToggleIcons(false);
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeToggleIcons(isLight);
+        }
+
+        function updateThemeToggleIcons(isLight) {
+            const sunIcon = document.getElementById('theme-sun-icon');
+            const moonIcon = document.getElementById('theme-moon-icon');
+            const themeLabel = document.getElementById('theme-label');
+            if (sunIcon && moonIcon) {
+                if (isLight) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                    if (themeLabel) themeLabel.textContent = "Dia";
+                } else {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                    if (themeLabel) themeLabel.textContent = "Noite";
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initTheme);
+
+        function toggleDetails(idx) {
+            const detailRow = document.getElementById(`details-${idx}`);
+            if (detailRow) {
+                detailRow.classList.toggle('hidden');
+            }
+        }
+
+        function onAssetChange() {
+            const select = document.getElementById('modal-asset-select');
+            const priceInput = document.getElementById('modal-price-input');
+            if (select && select.selectedIndex >= 0) {
+                const selectedOption = select.options[select.selectedIndex];
+                if (selectedOption && selectedOption.dataset.unitValue) {
+                    const defaultVal = parseFloat(selectedOption.dataset.unitValue);
+                    priceInput.value = defaultVal;
+                }
+            }
+            calculateModalTotal();
+        }
+
+        function calculateModalTotal() {
+            const select = document.getElementById('modal-asset-select');
+            const qtyInput = document.getElementById('modal-quantity-input');
+            const priceInput = document.getElementById('modal-price-input');
+            const unitPriceEl = document.getElementById('modal-unit-price');
+            const quantityValEl = document.getElementById('modal-quantity-val');
+            const totalCostEl = document.getElementById('modal-total-cost');
+            const buyPnlStatusEl = document.getElementById('buy-pnl-status');
+
+            if (!select || !qtyInput || !priceInput) return;
+
+            const selectedOption = select.options[select.selectedIndex];
+            const baseValue = (selectedOption && selectedOption.dataset.unitValue) ? parseFloat(selectedOption.dataset.unitValue) : 0;
+            const unitValue = priceInput.value !== "" ? parseFloat(priceInput.value) || 0 : baseValue;
+            const quantity = parseFloat(qtyInput.value) || 0;
+
+            const total = unitValue * quantity;
+
+            unitPriceEl.textContent = `$ ${unitValue.toFixed(2)}`;
+            quantityValEl.textContent = quantity > 0 ? quantity : '0';
+            totalCostEl.textContent = `$ ${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            if (buyPnlStatusEl && baseValue > 0) {
+                if (unitValue < baseValue) {
+                    buyPnlStatusEl.className = "text-emerald-400 font-bold";
+                    buyPnlStatusEl.textContent = "Comprando abaixo da base (Lucro)";
+                } else if (unitValue > baseValue) {
+                    buyPnlStatusEl.className = "text-rose-400 font-bold";
+                    buyPnlStatusEl.textContent = "Comprando acima da base (Prejuízo)";
+                } else {
+                    buyPnlStatusEl.className = "text-slate-300 font-bold";
+                    buyPnlStatusEl.textContent = "Preço base de mercado";
+                }
+            }
+        }
+
+        function openRegisterModal() {
+            const modal = document.getElementById('register-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            calculateModalTotal();
+        }
+
+        function closeRegisterModal() {
+            const modal = document.getElementById('register-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openSellModal() {
+            const modal = document.getElementById('sell-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                calculateSellTotal();
+            }
+        }
+
+        function closeSellModal() {
+            const modal = document.getElementById('sell-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function onSellAssetChange() {
+            const select = document.getElementById('sell-asset-select');
+            const priceInput = document.getElementById('sell-price-input');
+            const qtyInput = document.getElementById('sell-quantity-input');
+            if (select && select.selectedIndex >= 0) {
+                const opt = select.options[select.selectedIndex];
+                if (opt && opt.dataset.unitValue) {
+                    priceInput.value = parseFloat(opt.dataset.unitValue);
+                }
+                if (opt && opt.dataset.maxQuantity) {
+                    qtyInput.max = parseFloat(opt.dataset.maxQuantity);
+                }
+            }
+            calculateSellTotal();
+        }
+
+        function calculateSellTotal() {
+            const select = document.getElementById('sell-asset-select');
+            const qtyInput = document.getElementById('sell-quantity-input');
+            const priceInput = document.getElementById('sell-price-input');
+            const purchasePriceEl = document.getElementById('sell-purchase-price');
+            const totalRevenueEl = document.getElementById('sell-total-revenue');
+            const pnlResultEl = document.getElementById('sell-pnl-result');
+
+            if (!select || !qtyInput || !priceInput) return;
+
+            const opt = select.options[select.selectedIndex];
+            const purchasePrice = (opt && opt.dataset.purchasePrice) ? parseFloat(opt.dataset.purchasePrice) : 0;
+            const baseValue = (opt && opt.dataset.unitValue) ? parseFloat(opt.dataset.unitValue) : 0;
+            const sellPrice = priceInput.value !== "" ? parseFloat(priceInput.value) || 0 : baseValue;
+            const quantity = parseFloat(qtyInput.value) || 0;
+
+            const totalRevenue = sellPrice * quantity;
+            const pnl = (sellPrice - purchasePrice) * quantity;
+
+            purchasePriceEl.textContent = `$ ${purchasePrice.toFixed(2)}`;
+            totalRevenueEl.textContent = `$ ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            if (pnl >= 0) {
+                pnlResultEl.className = "text-emerald-400 font-bold";
+                pnlResultEl.textContent = `+ $ ${pnl.toFixed(2)} (Lucro)`;
+            } else {
+                pnlResultEl.className = "text-rose-400 font-bold";
+                pnlResultEl.textContent = `- $ ${Math.abs(pnl).toFixed(2)} (Prejuízo)`;
+            }
+        }
+    </script>
+</body>
+
+</html>
