@@ -8,7 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -16,6 +18,7 @@
             color: #f1f5f9;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .font-mono {
             font-family: 'Space Mono', monospace;
         }
@@ -25,29 +28,36 @@
             background-color: #f8fafc !important;
             color: #0f172a !important;
         }
+
         body.light-mode .ambient-glow {
             opacity: 0.3;
         }
+
         body.light-mode .auth-card {
             background-color: #ffffff !important;
             border-color: #e2e8f0 !important;
             box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.1) !important;
         }
+
         body.light-mode .text-white,
         body.light-mode .text-slate-100 {
             color: #0f172a !important;
         }
+
         body.light-mode .text-slate-400 {
             color: #64748b !important;
         }
+
         body.light-mode .text-slate-300 {
             color: #334155 !important;
         }
+
         body.light-mode input {
             background-color: #f1f5f9 !important;
             border-color: #cbd5e1 !important;
             color: #0f172a !important;
         }
+
         body.light-mode input::placeholder {
             color: #94a3b8 !important;
         }
@@ -56,32 +66,45 @@
 
 <body class="bg-[#070a13] text-slate-100 flex justify-center items-center min-h-screen relative overflow-hidden p-4">
     <!-- Ambient Background Blur Effects -->
-    <div class="ambient-glow absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="ambient-glow absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none"></div>
+    <div
+        class="ambient-glow absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none">
+    </div>
+    <div
+        class="ambient-glow absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none">
+    </div>
 
     <!-- Top Corner Theme Switcher Button -->
     <div class="absolute top-6 right-6 z-20">
         <button type="button" onclick="toggleTheme()"
             class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer">
-            <svg id="theme-sun-icon" class="w-4 h-4 text-amber-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            <svg id="theme-sun-icon" class="w-4 h-4 text-amber-400 hidden" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                </path>
             </svg>
-            <svg id="theme-moon-icon" class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            <svg id="theme-moon-icon" class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
             </svg>
             <span id="theme-label">Noite</span>
         </button>
     </div>
 
     <!-- Login Card -->
-    <div class="auth-card w-full max-w-md bg-[#0d1322]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative z-10 flex flex-col gap-6">
-        
+    <div
+        class="auth-card w-full max-w-md bg-[#0d1322]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative z-10 flex flex-col gap-6">
+
         <!-- Brand Header -->
         <div class="flex flex-col items-center gap-3 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-0.5 shadow-[0_0_25px_rgba(34,211,238,0.3)]">
+            <div
+                class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-0.5 shadow-[0_0_25px_rgba(34,211,238,0.3)]">
                 <div class="w-full h-full bg-[#0d1322] rounded-[14px] flex items-center justify-center">
                     <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                        </path>
                     </svg>
                 </div>
             </div>
@@ -98,7 +121,8 @@
                 <div class="relative flex items-center">
                     <span class="absolute left-4 text-slate-500">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </span>
                     <input type="text" name="username" placeholder="Digite seu usuário" required autocomplete="username"
@@ -111,10 +135,13 @@
                 <div class="relative flex items-center">
                     <span class="absolute left-4 text-slate-500">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
                         </svg>
                     </span>
-                    <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password"
+                    <input type="password" name="password" placeholder="••••••••" required
+                        autocomplete="current-password"
                         class="w-full pl-12 pr-4 py-3.5 bg-[#131b2e] border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm font-medium">
                 </div>
             </div>
@@ -126,20 +153,35 @@
         </form>
 
         <!-- Footer Link -->
-        <div class="text-center pt-2 border-t border-white/5">
+        <div class="text-center pt-2 border-t border-white/5 flex flex-col gap-3">
             <p class="text-xs text-slate-400">
-                Ainda não tem uma conta? 
-                <a href="/register" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">Cadastre-se grátis</a>
+                Ainda não tem uma conta?
+                <a href="/register"
+                    class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">Cadastre-se grátis</a>
             </p>
+
+            <!-- Admin Credentials Hint -->
+            <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-center">
+                <p class="text-[11px] text-amber-300 font-medium">
+                    <span class="font-bold">Acesso Administrador:</span><br>
+                    Usuário: <code class="bg-black/40 px-1.5 py-0.5 rounded text-amber-200 font-mono">admin</code> |
+                    Senha: <code class="bg-black/40 px-1.5 py-0.5 rounded text-amber-200 font-mono">admin</code>
+                </p>
+            </div>
         </div>
     </div>
 
     <!-- Error Modal Popup -->
-    <div id="error-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-50 p-4">
-        <div class="bg-[#0d1322] border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(244,63,94,0.2)] text-center flex flex-col items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl font-bold">
+    <div id="error-modal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div
+            class="bg-[#0d1322] border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(244,63,94,0.2)] text-center flex flex-col items-center gap-4">
+            <div
+                class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl font-bold">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
                 </svg>
             </div>
             <h3 class="text-white text-lg font-bold">Atenção</h3>
