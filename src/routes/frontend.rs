@@ -24,6 +24,7 @@ pub fn router() -> Router<AppState> {
         .route("/Carteira/buy", axum::routing::post(buy_asset))
         .route("/Carteira/sell", axum::routing::post(sell_asset))
         .route("/assets/new", axum::routing::post(create_asset))
+        .route("/assets/update_price", axum::routing::post(update_asset_price))
 }
 
 #[derive(Template)]
@@ -191,6 +192,37 @@ async fn create_asset(
     };
 
     repository.create_asset(form.name, form.unit_value).await?;
+
+    Ok(Redirect::to("/"))
+}
+
+#[derive(Deserialize)]
+struct UpdateAssetPriceForm {
+    asset_id: i64,
+    unit_value: f64,
+}
+
+async fn update_asset_price(
+    maybe_user: Option<User>,
+    repository: Repository,
+    Form(form): Form<UpdateAssetPriceForm>,
+) -> Result<impl IntoResponse, AppError> {
+    let user = match maybe_user {
+        Some(user) => user,
+        None => return Err(AppError::MissingAuthorization),
+    };
+
+    if user.username() != "admin" {
+        return Err(AppError::Unauthorized);
+    }
+
+    if form.unit_value <= 0.0 {
+        return Err(AppError::InvalidUnitPrice);
+    }
+
+    repository
+        .update_asset(form.asset_id, None, Some(form.unit_value))
+        .await?;
 
     Ok(Redirect::to("/"))
 }

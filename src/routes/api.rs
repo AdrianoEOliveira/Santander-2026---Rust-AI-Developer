@@ -342,4 +342,38 @@ mod tests {
         assert_eq!(assets_final.len(), 1);
         assert_eq!(assets_final[0].quantity, 0.0);
     }
+
+    #[sqlx::test]
+    async fn test_admin_update_asset_base_price_for_future_transactions(db: PgPool) {
+        let repo = Repository::from(db);
+        repo.ensure_default_assets().await.unwrap();
+
+        let user = repo
+            .add_user("testadminuser", "hash")
+            .await
+            .expect("add user");
+
+        // User buys 2 Bitcoins at $10.0 initial price
+        repo.buy_user_asset(user.id, 1, 2.0, Some(10.0))
+            .await
+            .expect("buy asset");
+
+        let assets_initial = repo.list_user_assets(user.id).await.expect("list assets");
+        assert_eq!(assets_initial[0].unit_value, 10.0);
+        assert_eq!(assets_initial[0].purchase_price, 10.0);
+
+        // Admin updates Bitcoin base market price to $50.0
+        repo.update_asset(1, None, Some(50.0))
+            .await
+            .expect("update asset")
+            .expect("asset exists");
+
+        // List assets should now reflect the new base market unit value of $50.0
+        let assets_after_update = repo.list_user_assets(user.id).await.expect("list assets");
+        assert_eq!(assets_after_update[0].unit_value, 50.0);
+        // Past buy purchase_price remains $10.0
+        assert_eq!(assets_after_update[0].purchases[0].purchase_price, 10.0);
+        // PnL recalculated against new base price: (50 - 10) * 2 = +80.0
+        assert_eq!(assets_after_update[0].pnl, 80.0);
+    }
 }

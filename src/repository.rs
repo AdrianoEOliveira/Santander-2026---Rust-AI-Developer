@@ -13,6 +13,15 @@ pub struct Repository {
 }
 
 impl Repository {
+    pub async fn ensure_default_admin(&self) -> sqlx::Result<()> {
+        let admin_user = self.get_user_by_name("admin").await?;
+        if admin_user.is_none() {
+            let password_hash = password_auth::generate_hash("admin");
+            let _ = self.add_user("admin", &password_hash).await?;
+        }
+        Ok(())
+    }
+
     pub async fn ensure_default_assets(&self) -> sqlx::Result<()> {
         let defaults = [
             ("Bitcoin", 10.0),
@@ -25,13 +34,15 @@ impl Repository {
             sqlx::query!(
                 "INSERT INTO assets (name, unit_value)
                  VALUES ($1, $2)
-                 ON CONFLICT (name) DO UPDATE SET unit_value = EXCLUDED.unit_value;",
+                 ON CONFLICT (name) DO NOTHING;",
                 name,
                 value
             )
             .execute(&self.db)
             .await?;
         }
+
+        self.ensure_default_admin().await?;
 
         Ok(())
     }
